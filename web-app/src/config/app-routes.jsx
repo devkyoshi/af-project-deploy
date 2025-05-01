@@ -29,7 +29,7 @@ const AppRouteContent = () => {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/home" element={<HomePage />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/auth/login" element={<LoginPage />} />
       {/* Protected routes */}
       <Route element={<ProtectedRoutes />}>
