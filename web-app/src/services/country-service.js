@@ -25,7 +25,7 @@ export const getAllCountries = async () => {
 /**
  * Fetches detailed info for one country.
  * @param {string} countryName – the common name, e.g. "Sri Lanka"
- * @returns {Promise<CountryDetails|null>}
+ * @returns {Promise<any|null>}
  */
 export const getCountryByName = async (countryName) => {
   try {
@@ -102,6 +102,11 @@ export const getCountryByName = async (countryName) => {
   }
 };
 
+/**
+ * Fetches all countries in a specific region.
+ * @param {string} region – the region name, e.g. "Asia"
+ * @returns {Promise<any|*[]>}
+ */
 export const getCountriesByRegion = async (region) => {
   try {
     const res = await api.get(
@@ -121,6 +126,34 @@ export const getCountriesByRegion = async (region) => {
     );
   } catch (e) {
     console.error("Error fetching countries by region:", e);
+    return [];
+  }
+};
+
+/**
+ * Fetches all countries that use a specific currency.
+ * @param currencyCode
+ * @returns {Promise<any|*[]>}
+ */
+export const getCountriesByCurrency = async (currencyCode) => {
+  try {
+    const res = await api.get(
+      `/currency/${currencyCode}?fields=name,capital,currencies,flags,population,maps`,
+    );
+
+    return (
+      res.data &&
+      res.data.map((country) => ({
+        name: country.name,
+        capital: country.capital,
+        currencies: country.currencies,
+        flags: country.flags,
+        population: country.population,
+        mapLinks: country.maps,
+      }))
+    );
+  } catch (e) {
+    console.error("Error fetching countries by currency:", e);
     return [];
   }
 };

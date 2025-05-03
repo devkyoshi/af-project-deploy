@@ -4,7 +4,7 @@ import {
   GlobalOutlined,
   StarOutlined,
 } from "@ant-design/icons";
-import { useTheme } from "../hooks/theme-context";
+import { useTheme } from "../contexts/theme-context.jsx";
 import { Link } from "react-router-dom";
 
 export const HomePage = () => {

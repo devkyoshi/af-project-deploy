@@ -1,36 +1,38 @@
 import { useState, useEffect, useMemo } from "react";
-import { Select, Input, Skeleton, Card } from "antd";
+import { Input, Skeleton, Card, Alert } from "antd";
 import { SearchIcon, Users, DollarSign, MapPin, Globe } from "lucide-react";
-import { getCountriesByRegion } from "../services/country-service.js";
+import { getCountriesByCurrency } from "../services/country-service.js";
 import { useTheme } from "../contexts/theme-context.jsx";
 import FavoriteButton from "../components/favourite-btn.jsx";
 
-const { Option } = Select;
 const { Meta } = Card;
 
-const regionOptions = [
-  { value: "africa", label: "Africa" },
-  { value: "americas", label: "Americas" },
-  { value: "asia", label: "Asia" },
-  { value: "europe", label: "Europe" },
-  { value: "oceania", label: "Oceania" },
-];
-
-export const RegionsPage = () => {
-  const [selectedRegion, setSelectedRegion] = useState("asia");
+export const CurrencyPage = () => {
+  const [currencyCode, setCurrencyCode] = useState("USD");
   const [searchQuery, setSearchQuery] = useState("");
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { theme } = useTheme();
 
   useEffect(() => {
-    if (selectedRegion) {
+    if (currencyCode.trim().length >= 3) {
       setLoading(true);
-      getCountriesByRegion(selectedRegion)
-        .then((data) => setCountries(data))
+      setError("");
+      getCountriesByCurrency(currencyCode.trim().toUpperCase())
+        .then((data) => {
+          if (data.length === 0) {
+            setError("No countries found for this currency code");
+          }
+          setCountries(data);
+        })
+        .catch((err) => {
+          setError("Invalid currency code or API error");
+          console.error(err);
+        })
         .finally(() => setLoading(false));
     }
-  }, [selectedRegion]);
+  }, [currencyCode]);
 
   const filteredCountries = useMemo(
     () =>
@@ -59,10 +61,6 @@ export const RegionsPage = () => {
       theme === "dark"
         ? "bg-gray-800 border-gray-700 text-white"
         : "bg-white border-gray-300",
-    select:
-      theme === "dark"
-        ? "bg-white/10 border-gray-700 text-white"
-        : "bg-white border-gray-300",
     textMuted: theme === "dark" ? "text-gray-400" : "text-gray-600",
   };
 
@@ -72,51 +70,36 @@ export const RegionsPage = () => {
     >
       <div className="max-w-7xl mx-auto">
         <div
-          className={`text-center mb-12 border-b pb-2 border-gray-200 ${theme === "dark" ? "border-white/10" : ""}`}
+          className={`text-center mb-12 border-b pb-2 border-gray-200 ${
+            theme === "dark" ? "border-white/10" : ""
+          }`}
         >
           <h1
-            className={`text-4xl mb-1 font-bold flex items-center justify-center gap-3  ${themeClasses.textMuted}`}
+            className={`text-4xl mb-1 font-bold flex items-center justify-center gap-3 ${themeClasses.textMuted}`}
           >
-            <Globe className="h-9 w-9" />
-            Explore Countries
+            <DollarSign className="h-9 w-9" />
+            Currency Explorer
           </h1>
-          <p className={`text-lg  ${themeClasses.textMuted}`}>
-            Discover countries in{" "}
-            {selectedRegion.charAt(0).toUpperCase() + selectedRegion.slice(1)}
+          <p className={`text-lg ${themeClasses.textMuted}`}>
+            Discover countries using {currencyCode.toUpperCase()}
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <Select
-            id="region-select"
-            defaultValue="asia"
-            className={`w-full md:w-64 rounded-lg ${themeClasses.select}`}
-            onChange={setSelectedRegion}
-            optionLabelProp="label"
-            suffixIcon={<Globe className="text-current w-4 h-4" />}
-          >
-            {regionOptions.map((region) => (
-              <Option
-                id={`region-option-${region.value}`}
-                key={region.value}
-                value={region.value}
-                label={region.label}
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className={
-                      theme === "dark" ? "text-gray-100" : "text-gray-900"
-                    }
-                  >
-                    {region.label}
-                  </span>
-                </div>
-              </Option>
-            ))}
-          </Select>
+          <Input
+            placeholder="Enter currency code (e.g., USD, EUR)..."
+            prefix={
+              <DollarSign className={`h-4 w-4 ${themeClasses.textMuted}`} />
+            }
+            onChange={(e) => setCurrencyCode(e.target.value)}
+            className={`rounded-lg ${themeClasses.input}`}
+            value={currencyCode}
+            maxLength={3}
+            allowClear
+          />
 
           <Input
-            placeholder="Search countries..."
+            placeholder="Filter countries..."
             prefix={
               <SearchIcon className={`h-4 w-4 ${themeClasses.textMuted}`} />
             }
@@ -125,6 +108,16 @@ export const RegionsPage = () => {
             allowClear
           />
         </div>
+
+        {error && (
+          <Alert
+            message={error}
+            type="warning"
+            showIcon
+            className="mb-6"
+            closable
+          />
+        )}
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -152,7 +145,7 @@ export const RegionsPage = () => {
                       src={country.flags.png}
                       className="object-cover w-full h-full"
                     />
-                    <div className="absolute inset-0 " />
+                    <div className="absolute inset-0" />
                   </div>
                 }
               >
@@ -160,11 +153,12 @@ export const RegionsPage = () => {
                   title={
                     <div className={"flex items-center justify-between mb-2"}>
                       <h3
-                        className={`text-xl font-semibold  ${theme === "dark" ? "text-white" : "text-gray-800"}`}
+                        className={`text-xl font-semibold ${
+                          theme === "dark" ? "text-white" : "text-gray-800"
+                        }`}
                       >
                         {country.name.common}
                       </h3>
-
                       <FavoriteButton
                         country={{
                           ...country,
@@ -190,13 +184,24 @@ export const RegionsPage = () => {
                         />
                         <span className={themeClasses.textMuted}>
                           {Object.values(country.currencies)
-                            .map((c) => c.name)
+                            .map((c) => `${c.name} (${c.symbol})`)
                             .join(", ")}
                         </span>
                       </div>
 
+                      {country.capital && (
+                        <div className="flex items-center gap-3">
+                          <MapPin
+                            className={`h-5 w-5 ${themeClasses.textMuted}`}
+                          />
+                          <span className={themeClasses.textMuted}>
+                            {country.capital.join(", ")}
+                          </span>
+                        </div>
+                      )}
+
                       <div className="flex items-center gap-3">
-                        <MapPin
+                        <Globe
                           className={`h-5 w-5 ${themeClasses.textMuted}`}
                         />
                         <a
@@ -216,12 +221,12 @@ export const RegionsPage = () => {
           </div>
         )}
 
-        {!loading && filteredCountries.length === 0 && (
+        {!loading && filteredCountries.length === 0 && !error && (
           <div
             className={`text-center py-12 rounded-lg ${themeClasses.card} ${themeClasses.textMuted}`}
           >
-            <div className="text-2xl mb-4">🌍</div>
-            No countries found matching your search
+            <div className="text-2xl mb-4">💱</div>
+            Enter a valid 3-letter currency code to begin
           </div>
         )}
       </div>

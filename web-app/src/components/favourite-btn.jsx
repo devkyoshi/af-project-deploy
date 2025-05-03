@@ -1,5 +1,5 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { useFavorites } from "../hooks/favourites-context.jsx";
+import { useFavorites } from "../contexts/favourites-context.jsx";
 
 const FavoriteButton = ({ country }) => {
   const { isFavorite, addFavorite, removeFavorite, loading } = useFavorites();
@@ -17,6 +17,7 @@ const FavoriteButton = ({ country }) => {
 
   return (
     <button
+      id={`fav-btn-${country.name.common}`}
       onClick={handleToggle}
       className="text-red-500 text-xl hover:text-red-700 cursor-pointer"
     >

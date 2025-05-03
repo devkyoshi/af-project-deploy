@@ -1,4 +1,4 @@
-import { useAuth } from "../hooks/auth-context";
+import { useAuth } from "../contexts/auth-context.jsx";
 import { Card, Empty, Button, Divider } from "antd";
 import {
   UserOutlined,
@@ -6,9 +6,9 @@ import {
   GlobalOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { useTheme } from "../hooks/theme-context";
+import { useTheme } from "../contexts/theme-context.jsx";
 import { format } from "date-fns";
-import { useFavorites } from "../hooks/favourites-context.jsx";
+import { useFavorites } from "../contexts/favourites-context.jsx";
 
 export const UserProfilePage = () => {
   const { currentUser } = useAuth();

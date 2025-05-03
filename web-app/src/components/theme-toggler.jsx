@@ -1,6 +1,6 @@
 import { Switch } from "antd";
 import { BulbOutlined, BulbFilled } from "@ant-design/icons";
-import { useTheme } from "../hooks/theme-context";
+import { useTheme } from "../contexts/theme-context.jsx";
 
 export const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();

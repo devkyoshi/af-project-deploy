@@ -9,7 +9,7 @@ import {
   MapPin,
   NavigationIcon,
 } from "lucide-react";
-import { useTheme } from "../hooks/theme-context.jsx";
+import { useTheme } from "../contexts/theme-context.jsx";
 import FavoriteButton from "../components/favourite-btn.jsx";
 
 export const CountryPage = () => {

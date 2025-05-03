@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { MenuIcon, SquareMenu } from "lucide-react";
 import { ThemeToggle } from "./theme-toggler.jsx";
 import { Menu } from "antd";
-import { useAuth } from "../hooks/auth-context.jsx";
-import { useTheme } from "../hooks/theme-context.jsx";
+import { useAuth } from "../contexts/auth-context.jsx";
+import { useTheme } from "../contexts/theme-context.jsx";
 
 export const Navbar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
