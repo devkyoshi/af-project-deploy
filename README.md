@@ -150,9 +150,9 @@ nationscope/
 
 ## Testing
 
-### Automated Test Suite
+### Backend Automated Test Suite
 
-NationScope includes a comprehensive test suite using Python, pytest, and Selenium WebDriver to validate critical functionality across the application.
+NationScope includes a comprehensive end-to-end test suite using Python, pytest, and Selenium WebDriver to validate critical functionality across the application.
 
 **Features**:
 - Cross-browser testing (Edge/Chromium)
@@ -160,6 +160,19 @@ NationScope includes a comprehensive test suite using Python, pytest, and Seleni
 - HTML test reports generation
 - Headless mode for CI/CD pipelines
 - Automatic browser driver management
+
+### Frontend Testing
+
+The frontend application includes a comprehensive testing setup using Vitest and React Testing Library for unit and component testing, as well as Lighthouse CI for performance testing.
+
+**Features**:
+- Unit and component testing with Vitest
+- DOM testing with jsdom
+- Code coverage reporting
+- Performance testing with Lighthouse CI
+- Integration with Vite build system
+
+For detailed information about the frontend testing setup, see [TESTING.md](web-app/TESTING.md).
 
 ### Prerequisites
 - Python 3.8+
@@ -175,7 +188,7 @@ NationScope includes a comprehensive test suite using Python, pytest, and Seleni
   - **test_region_page.py**: Tests for region page functionality
   - **test_favorites.py**: Tests for favorites system functionality
   - **conftest.py**: Configuration file for pytest, including fixtures and setup
-  
+
 
 
 ### Running Tests
@@ -190,13 +203,13 @@ NationScope includes a comprehensive test suite using Python, pytest, and Seleni
 ``` bash 
    # Run all tests with verbose output
    pytest tests/ -v
-   
+
    # Generate HTML report
    pytest tests/ -v --html=test-report.html
-   
+
    # Run specific test file
    pytest tests/test_auth_login.py -v
-   
+
    # Run in headless mode (no browser window)
    pytest tests/ -v --headless
 
